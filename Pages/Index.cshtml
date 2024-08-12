@@ -1,0 +1,81 @@
+﻿@page
+@model Formulario.Pages.IndexModel
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Formulario de Ejemplo</title>
+    <script type="text/javascript">
+        function checkVisit() {
+            var visited = getCookie("visited");
+
+            if (visited === "") {
+                document.getElementById("message").innerText = "Hola Mundo - Es la primera vez que se ha cargado la página";
+                setCookie("visited", "true", 365);
+            } else {
+                document.getElementById("message").innerText = "Esta página ya ha sido visitada";
+            }
+
+            var name = getCookie("name");
+            var lastName = getCookie("lastName");
+
+            if (name && lastName) {
+                document.getElementById("name").value = name;
+                document.getElementById("lastName").value = lastName;
+            }
+        }
+
+        function setCookie(name, value, days) {
+            var expires = "";
+            if (days) {
+                var date = new Date();
+                date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+                expires = "; expires=" + date.toUTCString();
+            }
+            document.cookie = name + "=" + (value || "") + expires + "; path=/";
+        }
+
+        function getCookie(name) {
+            var nameEQ = name + "=";
+            var ca = document.cookie.split(';');
+            for (var i = 0; i < ca.length; i++) {
+                var c = ca[i];
+                while (c.charAt(0) === ' ') c = c.substring(1, c.length);
+                if (c.indexOf(nameEQ) === 0) return c.substring(nameEQ.length, c.length);
+            }
+            return "";
+        }
+
+        function saveData() {
+            var name = document.getElementById("name").value;
+            var lastName = document.getElementById("lastName").value;
+            setCookie("name", name, 365);
+            setCookie("lastName", lastName, 365);
+        }
+
+        function reloadPage() {
+            window.location.reload();
+        }
+
+        window.onload = checkVisit;
+    </script>
+</head>
+<body>
+    <form id="form1">
+        <div>
+            <p id="message"></p>
+            <label for="name">Nombre:</label>
+            <input type="text" id="name" name="name" />
+            <br />
+            <label for="lastName">Apellido:</label>
+            <input type="text" id="lastName" name="lastName" />
+            <br />
+            <button type="button" onclick="saveData()">Guardar</button>
+            <button type="button" onclick="reloadPage()">Recargar Página</button>
+            <br />
+            <p>Número de usuarios desde que el servidor está encendido: @Model.UserCount</p>
+            <p>Número de veces que se ha recargado la página: @Model.PageReloadCount</p>
+        </div>
+    </form>
+</body>
+</html>
